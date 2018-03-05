@@ -6,50 +6,53 @@ exports.add=((req,res)=>{
         EmpDesignation:req.body.EmpDesignation
     })
     emp.save().then((result)=>{
-        res.json("Employee Record Inserted"+result);
+        console.log(result);
+        res.status(200).json("Employee Record Inserted"+result);
     }).catch((err)=>{
-        res.json(err);
+        res.status(404).json(err);
     })
 });
 exports.getAll=((req,res)=>{
     EmpModel.find().then((result)=>{
-        res.json("Employee Record Displayed"+result);
+        res.status(200).json(result);
     }).catch((err)=> {
-        res.json(err);
+        res.status(404).json(err);
     })
 });
 exports.upd=(req,res)=>{
-    EmpModel.findOneAndUpdate({_id:req.params.id}, {
+    var qur = req.query;
+    var id = qur.id;
+    EmpModel.findOneAndUpdate({_id:id}, {
         $set:{
             EmpName:req.body.EmpName,
             EmpSalary:req.body.EmpSalary,
             EmpDesignation:req.body.EmpDesignation
         }
     }).then((result)=>{
-        res.json("Employee Record Updated " + result);
+        res.status(200).json("Employee Record Updated " + result);
     },(err)=>{
-        res.json(err);
+        res.status(404).json(err);
     }).catch((err)=>{
-        res.json(err);
+        res.status(404).json(err);
     });
 }
 
 exports.deleteAll=((req,res)=>{
     EmpModel.delete().then((empl)=>{
-        res.send("Employees Deleted");
+        res.status(200).json("Employees Deleted" + empl);
     }).catch((err)=>{
-        res.send(err);
+        res.status(404).json(err);
     })
 });
 exports.deleteOne=((req,res)=>{
 
-    var qur=req.query;
+    var qur= req.query;
     var id = qur.id;
-    EmpModel.deleteOne({_id:id},(empl,err)=>{
-        if(err)
-        {
-            res.send(err);
-        }
-        res.send(empl);
+    EmpModel.deleteOne({_id:id}).then((empl)=>{
+            res.status(200).json(empl);
+        }).catch((err)=>{
+            res.status(404).json(err);
     })
 })
+
+
